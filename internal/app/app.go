@@ -13,5 +13,5 @@ func Run() {
 	r := resources.Router{}
 	r.Init()
 	srv := resources.Server{}
-	srv.Run("8080", r)
+	srv.Run(":8000", r)
 }

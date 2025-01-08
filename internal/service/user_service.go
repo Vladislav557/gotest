@@ -10,6 +10,20 @@ type UserService struct {
 	db *postgres.Database
 }
 
+func (us *UserService) Remove(id int) {
+	_, err := us.db.DB.Exec("DELETE FROM users WHERE id = $1", id)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func (us *UserService) Update(u *model.User, userID int) {
+	_, err := us.db.DB.Exec("UPDATE users SET name = $1, email = $2 WHERE id = $3", u.Name, u.Email, userID)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func (us *UserService) Create(u *model.User) {
 	err := us.db.DB.QueryRow("INSERT INTO users (name, email) VALUES ($1, $2) RETURNING id", u.Name, u.Email)
 	if err != nil {
@@ -19,7 +33,7 @@ func (us *UserService) Create(u *model.User) {
 
 func (us *UserService) GetUserByID(id int) model.User {
 	u := model.User{}
-	err := us.db.DB.QueryRow("SELECT * FROM users WHERE users.id = $1", id).Scan(&u.ID, &u.Name, &u.Email)
+	err := us.db.DB.QueryRow("SELECT * FROM users WHERE id = $1", id).Scan(&u.ID, &u.Name, &u.Email)
 	if err != nil {
 		log.Fatal(err)
 	}

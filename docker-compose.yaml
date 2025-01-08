@@ -3,6 +3,18 @@ networks:
     external: true
 
 services:
+  go-app-test: 
+    container_name: go-app
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    ports: 
+      - "8000:8000"
+    networks:
+      - docker_net
+    environment:
+      DATABASE_URL: "host=postgres-test user=dev password=dev dbname=dev sslmode=disable"
+
   postgres-test:
     image: postgres:16-alpine
     hostname: postgres-test
@@ -10,6 +22,7 @@ services:
     environment:
       POSTGRES_USER: "dev"
       POSTGRES_PASSWORD: "dev"
+      POSTGRES_DB: "dev"
     ports:
       - "6543:5432"
     networks:

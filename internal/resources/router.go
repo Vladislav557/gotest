@@ -15,6 +15,8 @@ func (r *Router) Init() {
 	uc := controller.UserController{}
 
 	r.router.HandleFunc("/users", uc.GetUsers).Methods("GET")
-	r.router.HandleFunc("/users/{id}", uc.GetUserByID).Methods("GET")
 	r.router.HandleFunc("/users", uc.Create).Methods("POST")
+	r.router.HandleFunc("/users/{id}", uc.GetUserByID).Methods("GET")
+	r.router.HandleFunc("/users/{id}", uc.Remove).Methods("DELETE")
+	r.router.HandleFunc("/users/{id}", uc.Update).Methods("PUT")
 }

@@ -15,7 +15,32 @@ type UserController struct {
 	us *service.UserService
 }
 
+func (c UserController) Update(rw http.ResponseWriter, req *http.Request) {
+	rw.Header().Set("Content-Type", "application/json")
+	var u model.User
+	vars := mux.Vars(req)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		log.Fatal(err)
+	}
+	json.NewDecoder(req.Body).Decode(&u)
+	c.us.Update(&u, id)
+	json.NewEncoder(rw).Encode(u)
+}
+
+func (c UserController) Remove(rw http.ResponseWriter, req *http.Request) {
+	rw.Header().Set("Content-Type", "application/json")
+	vars := mux.Vars(req)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		log.Fatal(err)
+	}
+	c.us.Remove(id)
+	json.NewEncoder(rw).Encode("success")
+}
+
 func (c UserController) Create(rw http.ResponseWriter, req *http.Request) {
+	rw.Header().Set("Content-Type", "application/json")
 	var u model.User
 	json.NewDecoder(req.Body).Decode(&u)
 	c.us.Create(&u)

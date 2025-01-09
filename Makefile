@@ -1,7 +1,7 @@
 build:
 	docker compose up -d --build
 
-exet:
+exec:
 	docker exec -ti go-app sh
 
 network: 

@@ -1,8 +1,12 @@
 package resources
 
 import (
-	"github.com/gorilla/mux"
+	"encoding/json"
 	"gotest/internal/controller"
+	"log"
+	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 type Router struct {
@@ -11,6 +15,16 @@ type Router struct {
 
 func (r *Router) Init() {
 	r.router = mux.NewRouter()
+
+	r.router.HandleFunc("/health", func (rw http.ResponseWriter, req *http.Request) {
+		rw.Header().Set("Content-Type", "application/json")
+		res := map[string]string{"status": "ok"}
+		json, err := json.Marshal(res)
+		if err != nil {
+			log.Fatal(err)
+		}
+		rw.Write(json)
+	})
 
 	uc := controller.UserController{}
 

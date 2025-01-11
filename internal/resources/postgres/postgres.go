@@ -11,7 +11,6 @@ var DB *sql.DB
 func Init(url string) {
 	var err error
 	DB, err = sql.Open("postgres", url)
-	Migrate()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -26,7 +25,7 @@ func Close() {
 	}
 }
 
-func Migrate() {
+func AutoMigrate() {
 	_, err := DB.Exec("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, name TEXT, email TEXT)")
 	if err != nil {
 		log.Fatal(err)

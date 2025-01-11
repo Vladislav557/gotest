@@ -1,12 +1,27 @@
 package resources
 
 import (
-	"log"
+	"context"
 	"net/http"
+	"time"
 )
 
-type Server struct{}
+type Server struct {
+	httpServer *http.Server
+}
 
-func (s *Server) Run(p string, r Router) {
-	log.Fatal(http.ListenAndServe(p, r.router))
+func (s *Server) Run(port string, handler http.Handler) error {
+	s.httpServer = &http.Server{
+		Addr:           ":" + port,
+		Handler:        handler,
+		MaxHeaderBytes: 1 << 20, // 1 MB
+		ReadTimeout:    60 * time.Second,
+		WriteTimeout:   60 * time.Second,
+	}
+
+	return s.httpServer.ListenAndServe()
+}
+
+func (s *Server) Shutdown(ctx context.Context) error {
+	return s.httpServer.Shutdown(ctx)
 }

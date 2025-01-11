@@ -1,9 +1,9 @@
 package controller
 
 import (
+	"encoding/json"
 	"gotest/internal/model"
 	"gotest/internal/service"
-	"encoding/json"
 	"log"
 	"net/http"
 	"strconv"
@@ -61,5 +61,9 @@ func (c UserController) GetUserByID(rw http.ResponseWriter, req *http.Request) {
 		log.Fatal(err)
 	}
 	user := c.us.GetUserByID(id)
-	json.NewEncoder(rw).Encode(user)
+	if user.ID == 0 {
+		rw.WriteHeader(http.StatusNotFound)
+	} else {
+		json.NewEncoder(rw).Encode(user)
+	}
 }

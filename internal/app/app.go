@@ -1,15 +1,13 @@
 package app
 
 import (
-	"gotest/internal/resources/postgres"
 	"gotest/internal/resources"
-	"os"
+	"gotest/internal/resources/postgres"
 )
 
 func Run() {
-	db := new(postgres.Database)
-	defer db.Close()
-	db.Init(os.Getenv("DATABASE_URL"))
+	postgres.Init("host=localhost port=6543 user=dev password=dev dbname=dev sslmode=disable")
+	defer postgres.Close()
 	r := resources.Router{}
 	r.Init()
 	srv := resources.Server{}

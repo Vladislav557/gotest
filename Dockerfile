@@ -6,7 +6,7 @@ WORKDIR /app
 
 RUN go mod tidy
 
-RUN go build -o /app/gotest /app/cmd/bin/main.go
+RUN CGO_ENABLED=0 go build -o /app/gotest /app/cmd/bin/main.go
 
 EXPOSE 8000
 

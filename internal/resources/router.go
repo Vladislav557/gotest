@@ -16,14 +16,17 @@ type Router struct {
 func (r *Router) Init() {
 	r.router = mux.NewRouter()
 
-	r.router.HandleFunc("/health", func (rw http.ResponseWriter, req *http.Request) {
+	r.router.HandleFunc("/health", func(rw http.ResponseWriter, req *http.Request) {
 		rw.Header().Set("Content-Type", "application/json")
 		res := map[string]string{"status": "ok"}
-		json, err := json.Marshal(res)
+		jsonRes, err := json.Marshal(res)
 		if err != nil {
 			log.Fatal(err)
 		}
-		rw.Write(json)
+		_, err = rw.Write(jsonRes)
+		if err != nil {
+			log.Fatal(err)
+		}
 	})
 
 	uc := controller.UserController{}

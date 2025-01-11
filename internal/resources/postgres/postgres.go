@@ -1,28 +1,34 @@
 package postgres
 
 import (
-    "database/sql"
-    "log"
-    _ "github.com/lib/pq"
+	"database/sql"
+	_ "github.com/lib/pq"
+	"log"
 )
 
-type Database struct {
-    DB *sql.DB
+var DB *sql.DB
+
+func Init(url string) {
+	var err error
+	DB, err = sql.Open("postgres", url)
+	Migrate()
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err = DB.Ping(); err != nil {
+		log.Fatal(err)
+	}
 }
 
-func (db *Database) Init(url string) {
-    var err error
-    db.DB, err = sql.Open("postgres", url)
-    if err != nil {
-        log.Fatal(err)
-    }
-    if err = db.DB.Ping(); err != nil {
-        log.Fatal(err)
-    }
+func Close() {
+	if err := DB.Close(); err != nil {
+		log.Fatal(err)
+	}
 }
 
-func (db *Database) Close() {
-    if err := db.DB.Close(); err != nil {
-        log.Fatal(err)
-    }
+func Migrate() {
+	_, err := DB.Exec("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, name TEXT, email TEXT)")
+	if err != nil {
+		log.Fatal(err)
+	}
 }
